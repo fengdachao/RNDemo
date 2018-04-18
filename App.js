@@ -18,34 +18,7 @@ import {
 
 import UXView from './src/UXView'
 
-const html = `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Page Title</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-</head>
-<body>
-  <div id="root" style="width: 100%; height: 100%; position: absolute; overflow: hidden;">
-      <div class="spinner">
-          <div class="bounce1">&nbsp;</div>
-          <div class="bounce2">&nbsp;</div>
-          <div class="bounce3">&nbsp;</div>
-      </div>
-  </div>
-  <script charset="UTF-8">
-    fetch('/resource/index.html')
-    .then((res) => {
-      alert('success');
-    })
-    .catch(() => {
-      alert('error');
-    })
-  </script>
-`;
+const consolePrefix = '####webview::'
 
 export default class App extends Component {
   constructor(props) {
@@ -69,7 +42,6 @@ export default class App extends Component {
     this.setState({
       uri: this.state.uri
     });
-    this.log('click browser.');
   }
 
   onChangeText(v) {
@@ -101,13 +73,22 @@ export default class App extends Component {
   render() {
     const viewProps = {
       source: {
-        // uri: 'http://10.49.58.19:8080/MX2.3-release',
-        uri: 'file:///hello.html',
+        uri: 'http://10.49.58.19:8080/MX3.0-daily/index-rui.jsp',
+        // uri: 'file:///hello.html',
         // baseUrl: 'http://localhost:8088/assets/',
         // html: html,
-      }
+      },
+      onLoad: () => {
+        console.log(`${consolePrefix} page onload`)
+      },
+      onLoadEnd: () => {
+        console.log(`${consolePrefix} page onload end`);
+      },
+      onError: (e) => {
+        console.log(`${consolePrefix} page onload error,${error}`);
+      },
+      thirdPartyCookiesEnabled: true,
     }
-    console.log(require('./hello.html'));
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>
