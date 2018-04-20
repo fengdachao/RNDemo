@@ -13,7 +13,8 @@ import {
   Button,
   WebView,
   View,
-  Alert
+  Alert,
+  ActivityIndicator
 } from 'react-native';
 
 import UXView from './src/UXView'
@@ -24,21 +25,20 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // uri: 'http://10.49.58.19:8080/MX3.0-daily',
-      uri: 'http://10.49.58.19:8080/MX2.3-release',
+      uri: 'http://10.49.58.15:8080/MX2.3-MR1/',
+      // uri: 'http://10.49.58.15:8080/MX2.3-release',
       // uri: 'http://www.google.com/',
-      // uri: 'https://github.com/facebook/react-native'
+      // uri: 'https://github.com/facebook/react-native',
+      isLoading: true,
     };
     this.onBrowser = this.onBrowser.bind(this);
     this.onChangeText = this.onChangeText.bind(this);
 
     // const assets = require('./assets/html');
     // alert(assets);
-    this.log('app contructure');
   }
 
   onBrowser() {
-    Alert.alert('click brower');
     this.setState({
       uri: this.state.uri
     });
@@ -73,21 +73,34 @@ export default class App extends Component {
   render() {
     const viewProps = {
       source: {
-        uri: 'http://10.49.58.19:8080/MX3.0-daily/index-rui.jsp',
+        uri: this.state.uri,
         // uri: 'file:///hello.html',
         // baseUrl: 'http://localhost:8088/assets/',
         // html: html,
       },
       onLoad: () => {
-        console.log(`${consolePrefix} page onload`)
+        console.log(`${consolePrefix} page onload`);
+        this.setState({
+          isLoading: true
+        })
       },
       onLoadEnd: () => {
         console.log(`${consolePrefix} page onload end`);
+        this.setState({
+          isLoading: false
+        })
       },
       onError: (e) => {
         console.log(`${consolePrefix} page onload error,${error}`);
+        this.setState({
+          isLoading: false
+        })
       },
       thirdPartyCookiesEnabled: true,
+      // startInLoadingState: true,
+      // renderLoading: () => {
+      //   return <ActivityIndicator size="small" color="#00ff00" />;
+      // }
     }
     return (
       <View style={styles.container}>
@@ -105,24 +118,28 @@ export default class App extends Component {
           title='Browser'
           onPress={this.onBrowser}
         />
-        <WebView {...viewProps} />
+        <ActivityIndicator animating={this.state.isLoading} size="small" color="#00ff00" />
+        <WebView style={styles.content} {...viewProps} />
       </View>
     );
   }
 }
 
-const uxCfg = {
-  mixedContentMode: 'never',
-  thirdPartyCookiesEnabled: false,
-  allowUniversalAccessFromFileURLs: true,
-}
-
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
-    height: '100%',
+    flex: 1,
+    justifyContent: 'center'
   },
   input: {
-    width: '100%',
+    
+  },
+  content: {
+    flexGrow: 2,
+    flexShrink: 1,
+    flexBasis: '100%',
+    // width: '100%',
+  },
+  indicator: {
+    
   }
 });
