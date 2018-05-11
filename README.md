@@ -1,4 +1,4 @@
-### This is a demo using by react-native.
+### This is a demo using react-native.
 
 ### Get started in react-native
 
@@ -28,12 +28,9 @@
 
 4. what's next
 
-Implementing your app just like writing react page. There are sevaral
+Implementing your app just like writing react component. There are sevaral
 resouces may help you.
 
 [React Native Docs](https://facebook.github.io/react-native/)
 
 [Adroid Native Document](https://developer.android.com/index.html)
-
-
-

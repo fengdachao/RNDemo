@@ -13,11 +13,12 @@ import {
   Button,
   WebView,
   View,
-  Alert,
-  ActivityIndicator
+  ActivityIndicator,
+  NativeModules
 } from 'react-native';
 
-import UXView from './src/UXView'
+import UXView from './src/UXView';
+import Notification from './src/Notification';
 
 const consolePrefix = '####webview::'
 
@@ -25,28 +26,39 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      uri: 'http://10.49.58.15:8080/MX2.3-MR1/',
+      uri: 'http://10.49.58.19:8080/MX3.0-release/index-tui.jsp',
       // uri: 'http://10.49.58.15:8080/MX2.3-release',
       // uri: 'http://www.google.com/',
       // uri: 'https://github.com/facebook/react-native',
+      text: '',
       isLoading: true,
     };
     this.onBrowser = this.onBrowser.bind(this);
     this.onChangeText = this.onChangeText.bind(this);
+    console.log(NativeModules);
+  }
 
-    // const assets = require('./assets/html');
-    // alert(assets);
+  componentDidUpdate() {
+    console.log('update...');
+  }
+
+  componentDidMount() {
+    console.log('mount...');
+  }
+
+  componentWillUnmount() {
+    console.log('un mount...');
   }
 
   onBrowser() {
     this.setState({
-      uri: this.state.uri
+      uri: this.state.text
     });
   }
 
   onChangeText(v) {
     this.setState({
-      uri: v
+      text: v
     })
   }
 
@@ -71,6 +83,7 @@ export default class App extends Component {
   }
 
   render() {
+    console.log(NativeModules.DeviceMonitor);
     const viewProps = {
       source: {
         uri: this.state.uri,
@@ -91,11 +104,21 @@ export default class App extends Component {
         })
       },
       onError: (e) => {
-        console.log(`${consolePrefix} page onload error,${error}`);
+        console.log(`${consolePrefix} page onload error,${e}`);
         this.setState({
           isLoading: false
         })
       },
+      onMessage: (e) => {
+        console.log(e.nativeEvent.data);
+        Notification.localNotification({
+          message: e.nativeEvent.data
+        });
+      },
+      injectJavaScript: () => {
+        return 'alert("alert");'
+      },
+      // injectedJavaScript: 'window.postMessage("message");alert("hello");',
       thirdPartyCookiesEnabled: true,
       // startInLoadingState: true,
       // renderLoading: () => {
@@ -104,7 +127,7 @@ export default class App extends Component {
     }
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>
+        {/* <Text style={styles.welcome}>
           uri path:
         </Text>
         <TextInput
@@ -118,7 +141,7 @@ export default class App extends Component {
           title='Browser'
           onPress={this.onBrowser}
         />
-        <ActivityIndicator animating={this.state.isLoading} size="small" color="#00ff00" />
+        <ActivityIndicator animating={this.state.isLoading} size="small" color="#00ff00" /> */}
         <WebView style={styles.content} {...viewProps} />
       </View>
     );
@@ -137,7 +160,6 @@ const styles = StyleSheet.create({
     flexGrow: 2,
     flexShrink: 1,
     flexBasis: '100%',
-    // width: '100%',
   },
   indicator: {
     
